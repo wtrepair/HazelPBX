@@ -4,6 +4,7 @@
 /passwords/*.pem
 /passwords/*.json
 !/passwords/*.template
+!/passwords/*.blank
 
 # Docker volumes
 /docker/data/
