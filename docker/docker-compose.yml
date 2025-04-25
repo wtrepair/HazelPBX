@@ -3,51 +3,39 @@ version: '3'
 services:
   freepbx:
     image: tiredofit/freepbx:latest
-    platform: linux/amd64
-    container_name: hazel-freepbx
-    volumes:
-      - ./data/freepbx:/data
-      - ./data/certs:/certs
-      - ./data/logs:/var/log/asterisk
-      - ../scripts:/scripts
+    container_name: freepbx
+    privileged: true
     ports:
-      # Web interface (HTTP/HTTPS)
-      - "8080:80"       # Web interface - Changed to 8080 to avoid conflicts with local web servers
-      - "8443:443"     # Web interface (SSL) - Changed to 8443 to avoid conflicts
-      # SIP Protocol (UDP/TCP)
-      - "5060:5060/udp" # SIP
-      - "5060:5060/tcp" # SIP
-      # RTP Media ports
-      - "10000-10100:10000-10100/udp" # RTP ports
-      # IAX2 Protocol (optional)
-      - "4569:4569/udp" # IAX2 protocol
-      # PJSIP Protocol (optional)
-      - "5061:5061/tcp" # SIP-TLS
+      # Web interface
+      - "80:80"
+      - "443:443"
+      # SIP ports
+      - "5060:5060/tcp"
+      - "5060:5060/udp"
+      - "5160:5160/tcp"
+      - "5160:5160/udp"
+      # IAX ports
+      - "4569:4569/tcp"
+      - "4569:4569/udp"
+      # RTP ports
+      - "16384-16484:16384-16484/udp"
+    volumes:
+      - freepbx_data:/data
+      - freepbx_logs:/logs
+      - freepbx_certs:/certs
     env_file:
       - ../passwords/passwords.env
     environment:
-      # Database settings
+      - TIMEZONE=America/New_York
+      - ADMIN_DIRECTORY=admin
       - DB_EMBEDDED=TRUE
-      - DB_ROOT_PASS=MySQLRoot2025!
-      - DB_PASS=FreePBXDB2025!
-      - DB_USER=freepbxuser
-      - DB_NAME=freepbx
-      # Admin credentials
-      - ADMIN_USER=admin
-      - ADMIN_PASSWORD=HazelPBX2025!
-      # System settings
-      - ENABLE_CRON=TRUE
-      - ENABLE_SMTP=FALSE
-      - TZ=America/New_York
+      - ENABLE_HTTPS=TRUE
+      - ENABLE_FAIL2BAN=FALSE
+      - UCP_FIRST=FALSE
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/admin/config.php"]
-      interval: 60s
-      timeout: 10s
-      retries: 5
     networks:
-      - hazel-network
-    
+      - freepbx-network
+
   hazel-tts:
     build:
       context: ../
@@ -57,19 +45,26 @@ services:
       - ./data/tts:/app/data
       - ./data/logs:/app/logs
       - ../scripts:/app/scripts
+      - ../the-tendril-456617-g9-ffa050d985df.json:/gcloud/creds.json:ro
     ports:
-      - "7850:5000"   # Expose the STT/TTS API service (remapped to 7850 to avoid conflicts)
+      - "7850:5000"
     env_file:
       - ../passwords/passwords.env
     environment:
       - PYTHONUNBUFFERED=1
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GOOGLE_APPLICATION_CREDENTIALS=/gcloud/creds.json
     depends_on:
       - freepbx
     restart: unless-stopped
     networks:
-      - hazel-network
+      - freepbx-network
 
 networks:
-  hazel-network:
+  freepbx-network:
     driver: bridge
+
+volumes:
+  freepbx_data:
+  freepbx_logs:
+  freepbx_certs:
