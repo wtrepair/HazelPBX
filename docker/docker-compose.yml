@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  freepbx:
+    image: tiredofit/freepbx:latest
+    container_name: hazel-freepbx
+    volumes:
+      - ./data/freepbx:/data
+      - ./data/certs:/certs
+      - ./data/logs:/var/log/asterisk
+    ports:
+      - "80:80"       # Web interface
+      - "443:443"     # Web interface (SSL)
+      - "5060:5060/udp" # SIP
+      - "5060:5060/tcp" # SIP
+      - "10000-10100:10000-10100/udp" # RTP ports
+    environment:
+      - DB_EMBEDDED=TRUE
+      - ENABLE_CRON=TRUE
+      - ENABLE_SMTP=FALSE
+      - SMTP_HOST=smtp.example.com
+      - SMTP_PORT=587
+      - SMTP_FROM=hazel@example.com
+      - SMTP_USER=${FREEPBX_ADMIN_USER}
+      - SMTP_PASS=${FREEPBX_ADMIN_PASSWORD}
+      - TZ=America/New_York
+    restart: unless-stopped
+    
+  hazel-tts:
+    image: alpine:latest
+    container_name: hazel-tts
+    volumes:
+      - ./data/tts:/app
+      - ../scripts:/scripts
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    command: /bin/sh -c "echo 'TTS service placeholder - will be replaced with actual implementation' && sleep infinity"
+    depends_on:
+      - freepbx
+    restart: unless-stopped
+
+networks:
+  default:
+    name: hazel-network

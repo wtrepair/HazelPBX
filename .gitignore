@@ -1,0 +1,28 @@
+# Ignore actual password files
+/passwords/*.env
+/passwords/*.key
+/passwords/*.pem
+/passwords/*.json
+!/passwords/*.template
+
+# Docker volumes
+/docker/data/
+
+# Logs
+*.log
+logs/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
