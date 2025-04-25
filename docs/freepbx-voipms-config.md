@@ -48,7 +48,7 @@ You can set outbound rules to manipulate the dialed number before sending it out
 canreinvite=nonat
 nat=yes
 context=from-trunk
-host=atlanta.voip.ms
+host=montreal10.voip.ms
 username=100000
 fromuser=100000
 secret=*****
@@ -62,7 +62,7 @@ qualify=yes
 ```
 
 **Important Notes:**
-- Replace "atlanta.voip.ms" with the server closest to your location
+- Replace "montreal10.voip.ms" with the server closest to your location
 - Replace "100000" with your 6-digit Main SIP Account User ID or Sub Account username
 - Replace "*****" with the password associated with the Main or Sub-account
 - Avoid using the '#' character in the password as it will cause authentication issues
@@ -76,7 +76,7 @@ This section must be blank. Delete any default settings.
 #### Registration
 If using "registration" as the authentication method (leave blank for IP Authentication):
 ```
-100000:YourPassword@atlanta.voip.ms:5060
+100000:YourPassword@montreal10.voip.ms:5060
 ```
 
 Replace with your actual credentials and server.
@@ -129,7 +129,7 @@ type=friend
 username=100000
 secret=*****
 context=from-trunk
-host=atlanta.voip.ms
+host=montreal10.voip.ms
 disallow=all
 allow=ulaw
 insecure=port,invite
@@ -138,7 +138,7 @@ qualify=yes
 ```
 
 **Important Notes:**
-- Replace "atlanta.voip.ms" with the server closest to your location
+- Replace "montreal10.voip.ms" with the server closest to your location
 - Replace "100000" with your 6-digit Main SIP Account User ID or Sub Account username
 - Replace "*****" with the password associated with the Main or Sub-account
 
@@ -148,7 +148,7 @@ This section must be blank. Delete any default settings.
 #### Registration
 If using "registration" as the authentication method (leave blank for IP Authentication):
 ```
-100000:YourPassword@atlanta.voip.ms:4569
+100000:YourPassword@montreal10.voip.ms:4569
 ```
 
 ## Outbound Routes
