@@ -29,6 +29,9 @@ services:
       - TIMEZONE=America/New_York
       - ADMIN_DIRECTORY=admin
       - DB_EMBEDDED=TRUE
+      - DB_NAME=asterisk
+      - DB_USER=freepbx
+      - DB_PASS=FreePBXDB2025!
       - ENABLE_HTTPS=TRUE
       - ENABLE_FAIL2BAN=FALSE
       - UCP_FIRST=FALSE
