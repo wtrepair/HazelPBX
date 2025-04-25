@@ -2,6 +2,8 @@
 
 This document provides detailed information on configuring FreePBX with VoIP.ms for use with the HazelPBX system.
 
+> Check out [VoIP.ms YouTube channel](https://www.youtube.com/user/voipmsdotcom) to watch simple tutorials that will help you set up most of their features.
+
 ## Table of Contents
 - [Important Security Information](#important-security-information)
 - [Creating a Trunk](#creating-a-trunk)
@@ -9,6 +11,11 @@ This document provides detailed information on configuring FreePBX with VoIP.ms 
   - [IAX2 Trunk Configuration](#iax2-trunk)
 - [Outbound Routes](#outbound-routes)
 - [Inbound Routes](#inbound-routes)
+- [Dialing Rules and Patterns](#dialing-rules-and-patterns)
+  - [Dialing Rules](#dialing-rules)
+  - [Useful VoIP.ms Rules](#useful-voipms-rules)
+  - [Dialing Patterns](#dialing-patterns)
+  - [Configuring Extensions Through Specific Trunks](#how-to-configure-one-extension-through-a-specific-trunk)
 - [PJSIP Trunk Configuration](#configuration-using-a-pjsip-trunk)
 - [Whitelisting VoIP.ms IPs](#whitelisting-voipms-ips-in-freepbx)
 
@@ -179,6 +186,82 @@ If you have DID numbers with VoIP.ms, you need inbound routes to manage them. Go
 Configure where incoming calls to this DID should go (extension, IVR, recording, voice mail, etc.)
 
 **Remember** to click the red "Apply Config" button after making any changes.
+
+## Dialing Rules and Patterns
+
+### Dialing Rules
+
+The most common dialing rule that we can find in the trunk outgoing settings (either SIP or IAX) is the following:
+```
+1+NXXNXXXXXX
+```
+
+*Where N represents a Number 2-9 and X represents Any Number*
+
+This rule adds the "1" to any pattern like "NXXNXXXXXX". It's important to understand that rules will apply as long as the pattern exists. If the pattern doesn't exist, the rule will never apply and the call will end with a typical "This call cannot be placed as dialed" message.
+
+For example, if you want to dial 7 digits only:
+```
+1555+NXXXXXX
+```
+
+Replace the 555 digits in the previous line with the area code of your choice.
+
+### Useful VoIP.ms Rules
+
+- **4443** - For calling Echo Test to test call connectivity to VoIP.ms servers and call quality.
+- **4747** - For DTMF Testing.
+- **\*\*\*XXX** - To test MOH (Music on Hold) Categories.
+- **\*xx** - To access Voicemail Options with the service like *97 and *98.
+- **0441+NXXNXXXXXX** or **0331+NXXNXXXXXX** - Used to manually dial a Premium (0441) or a Value (0331) Canadian Route.
+- **011+.** or **00+.** - For International Calling.
+- **044+.** and **033+.** - To Manually dial (044) Premium International Routes or (033) Value International Routes. Good for Testing a call via different routes on the go.
+
+### Dialing Patterns
+
+Dialing patterns can be found in the Outbound route. Whatever you dial from any extension must match a dialing pattern. The most common dialing pattern is:
+```
+NXXNXXXXXX
+```
+
+The outbound route will select the trunks it will use. If you have multiple trunks with the same patterns (which is common), then you will have to set the trunk priority. This is found at the top right of the outbound route screen as a list of the Outbound routes names with arrows to move up and down to set priority.
+
+### How to Configure One Extension Through a Specific Trunk
+
+The extension does not directly "choose" which trunk to use - this is determined by the outbound route. However, you can use patterns from the Outbound routes and dialing rules to route specific extensions through specific trunks.
+
+**Example Scenario:**
+
+Let's say we have:
+- trunk1 and trunk2
+- outbound route1 and outbound route2
+- extension1
+
+**Configuration Steps:**
+
+1. Set the same dialing rules for both trunk1 and trunk2:
+   ```
+   1+NXXNXXXXXX
+   ```
+
+2. For outbound route1, set the patterns:
+   ```
+   NXXNXXXXXX
+   2|.
+   ```
+   The `2|.` pattern means any number dialed with a "2" in front will be recognized by that route and use the associated trunk. The pattern also removes the "2" so it's not sent, and the rule in the trunk adds "1+".
+
+3. For outbound route2, set the patterns:
+   ```
+   NXXNXXXXXX
+   3|.
+   ```
+
+4. Now, when dialing from an extension:
+   - To use trunk1, dial `25626846308` (the "2" will be stripped and replaced with "1")
+   - To use trunk2, dial `35626846308` (the "3" will be stripped and replaced with "1")
+
+Additionally, you can configure dial rules on the devices that use the extension, so the prefix ("2" or "3") is sent automatically without having to dial it manually.
 
 ## Configuration Using a PJSIP Trunk
 
