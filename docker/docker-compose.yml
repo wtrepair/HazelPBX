@@ -3,6 +3,7 @@ version: '3'
 services:
   freepbx:
     image: tiredofit/freepbx:latest
+    platform: linux/amd64
     container_name: hazel-freepbx
     volumes:
       - ./data/freepbx:/data
@@ -27,13 +28,13 @@ services:
     environment:
       # Database settings
       - DB_EMBEDDED=TRUE
-      - DB_ROOT_PASS=${MYSQL_ROOT_PASSWORD}
-      - DB_PASS=${MYSQL_PASSWORD}
-      - DB_USER=${MYSQL_USER}
-      - DB_NAME=${MYSQL_DATABASE}
+      - DB_ROOT_PASS=MySQLRoot2025!
+      - DB_PASS=FreePBXDB2025!
+      - DB_USER=freepbxuser
+      - DB_NAME=freepbx
       # Admin credentials
-      - ADMIN_USER=${FREEPBX_ADMIN_USER}
-      - ADMIN_PASSWORD=${FREEPBX_ADMIN_PASSWORD}
+      - ADMIN_USER=admin
+      - ADMIN_PASSWORD=HazelPBX2025!
       # System settings
       - ENABLE_CRON=TRUE
       - ENABLE_SMTP=FALSE
@@ -57,7 +58,7 @@ services:
       - ./data/logs:/app/logs
       - ../scripts:/app/scripts
     ports:
-      - "5000:5000"   # Expose the STT/TTS API service
+      - "7850:5000"   # Expose the STT/TTS API service (remapped to 7850 to avoid conflicts)
     env_file:
       - ../passwords/passwords.env
     environment:
