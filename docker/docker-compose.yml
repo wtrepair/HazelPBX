@@ -17,7 +17,8 @@ services:
       - "4569:4569/tcp"
       - "4569:4569/udp"
       # RTP ports
-      - "16384-16484:16384-16484/udp"
+      # - "16384-16484:16384-16484/udp"
+      - "10000-20000:10000-20000"
     volumes:
       - freepbx_certs:/certs
       - wwwvol:/var/www/html
