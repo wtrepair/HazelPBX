@@ -25,7 +25,7 @@ services:
       - etcvol:/etc/asterisk
       - usrvol:/usr/lib64/asterisk
     env_file:
-      - ../passwords/passwords.env
+      - ./passwords/passwords.env
     environment:
       - TIMEZONE=America/New_York
       - ADMIN_DIRECTORY=admin
@@ -42,17 +42,16 @@ services:
 
   hazel-tts:
     build:
-      context: ../
+      context: ./
       dockerfile: docker/Dockerfile.tts
     volumes:
       - ./data/tts:/app/data
       - ./data/logs:/app/logs
-      - ../scripts:/app/scripts
-      - ../the-tendril-456617-g9-ffa050d985df.json:/gcloud/creds.json:ro
+      - ./scripts:/app/scripts
     ports:
       - "7850:5000"
     env_file:
-      - ../passwords/passwords.env
+      - ./passwords/passwords.env
     environment:
       - PYTHONUNBUFFERED=1
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
