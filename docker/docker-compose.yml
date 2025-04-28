@@ -21,11 +21,9 @@ services:
       - "10000-20000:10000-20000"
     volumes:
       - freepbx_certs:/certs
-      - wwwvol:/var/www/html
-      - varvol:/var/lib/asterisk
+      - varvol:/var/
       - etcvol:/etc/asterisk
       - usrvol:/usr/lib64/asterisk
-      - logvol:/var/log/asterisk
     env_file:
       - ../passwords/passwords.env
     environment:
@@ -71,8 +69,6 @@ networks:
 
 volumes:
   freepbx_certs:
-  wwwvol:
   varvol:
   etcvol:
   usrvol:
-  logvol:
