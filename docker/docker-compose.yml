@@ -3,7 +3,6 @@ version: '3'
 services:
   freepbx:
     image: tiredofit/freepbx:latest
-    container_name: freepbx
     privileged: true
     ports:
       # Web interface
@@ -20,9 +19,12 @@ services:
       # RTP ports
       - "16384-16484:16384-16484/udp"
     volumes:
-      - freepbx_data:/data
-      - freepbx_logs:/logs
       - freepbx_certs:/certs
+      - wwwvol:/var/www/html
+      - varvol:/var/lib/asterisk
+      - etcvol:/etc/asterisk
+      - usrvol:/usr/lib64/asterisk
+      - logvol:/var/log/asterisk
     env_file:
       - ../passwords/passwords.env
     environment:
@@ -43,7 +45,6 @@ services:
     build:
       context: ../
       dockerfile: docker/Dockerfile.tts
-    container_name: hazel-tts
     volumes:
       - ./data/tts:/app/data
       - ./data/logs:/app/logs
@@ -68,6 +69,9 @@ networks:
     driver: bridge
 
 volumes:
-  freepbx_data:
-  freepbx_logs:
   freepbx_certs:
+  wwwvol:
+  varvol:
+  etcvol:
+  usrvol:
+  logvol:
